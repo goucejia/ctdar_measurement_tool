@@ -44,12 +44,12 @@ class Cell(object):
     # @:param content: text content of the Cell
     # @:param cell_id: unique id of the Cell
 
-    def __init__(self, table_id, start_row, start_col, cell_box, end_row, end_col, content, content_box=""):
+    def __init__(self, table_id, start_row, start_col, cell_box, end_row, end_col, content_box=""):
         self._start_row = int(start_row)
         self._start_col = int(start_col)
         self._cell_box = cell_box
         self._content_box = content_box
-        self._content = content
+        # self._content = content
         self._table_id = table_id    # the table_id this cell belongs to
         # self._cell_name = cell_id    # specify the cell using passed-in cell_id
         self._cell_id = id(self)
@@ -97,15 +97,15 @@ class Cell(object):
     def table_id(self):
         return self._table_id
 
-    @property
-    def content(self):
-        return self._content
+    # @property
+    # def content(self):
+    #     return self._content
 
     def __str__(self):
-        # return "CELL row=[%d, %d] col=[%d, %d] (coords=%s)" %(self.start_row, self.end_row
-        #                                                       , self.start_col, self.end_col
-        #                                                       , self.cell_box)
-        return "CELL %s" % self.content
+        return "CELL row=[%d, %d] col=[%d, %d] (coords=%s)" %(self.start_row, self.end_row
+                                                              , self.start_col, self.end_col
+                                                              , self.cell_box)
+        # return "CELL %s" % self.content
 
     # return the IoU value of two cell blocks
     def compute_cell_iou(self, another_cell):
@@ -226,17 +226,17 @@ class Table:
             sc = cell.getAttribute("start-col")
             cell_id = cell.getAttribute("id")
             b_points = str(cell.getElementsByTagName("Coords")[0].getAttribute("points"))
-            try:
-                try:
-                    text = cell.getElementsByTagName("content")[0].firstChild.nodeValue
-                except AttributeError:
-                    text = ""
-            except IndexError:
-                text = "initialized cell as no content"
+            # try:
+            #     try:
+            #         text = cell.getElementsByTagName("content")[0].firstChild.nodeValue
+            #     except AttributeError:
+            #         text = ""
+            # except IndexError:
+            #     text = "initialized cell as no content"
             er = cell.getAttribute("end-row") if cell.hasAttribute("end-row") else -1
             ec = cell.getAttribute("end-col") if cell.hasAttribute("end-col") else -1
             new_cell = Cell(table_id=str(self.id), start_row=sr, start_col=sc, cell_box=b_points,
-                            end_row=er, end_col=ec, content=text)
+                            end_row=er, end_col=ec)
             # print(new_cell)
             max_row = max(max_row, int(sr), int(er))
             max_col = max(max_col, int(sc), int(ec))
@@ -509,16 +509,16 @@ class ResultStructure:
         return "true: {}, gt: {}, res: {}".format(self._truePos, self._gtTotal, self._resTotal)
 
 
-if __name__ == "__main__":
-    resultFile = "./annotations/test_files/test_for_data_structure.xml"
-    res_dom = xml.dom.minidom.parse(resultFile)
-    res_root = res_dom.documentElement
-    res_tables = []
-    tables = res_root.getElementsByTagName("table")
-    print("processing... document " + resultFile)
-    for res_table in tables:
-        t = Table(res_table)
-        res_tables.append(t)
-    table1 = res_tables[0]
-    # table1.convert_2d()
-    table1.find_adj_relations()
+# if __name__ == "__main__":
+#     resultFile = "./annotations/test_files/test_for_data_structure.xml"
+#     res_dom = xml.dom.minidom.parse(resultFile)
+#     res_root = res_dom.documentElement
+#     res_tables = []
+#     tables = res_root.getElementsByTagName("table")
+#     print("processing... document " + resultFile)
+#     for res_table in tables:
+#         t = Table(res_table)
+#         res_tables.append(t)
+#     table1 = res_tables[0]
+#     # table1.convert_2d()
+#     table1.find_adj_relations()
